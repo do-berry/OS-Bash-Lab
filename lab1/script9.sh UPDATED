@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# sprawdzenie podanej liczby argumentow:
+# jesli liczba argumentow nie jest rowna 2
+if [[ $# -ne 2 ]]; then
+	echo "Zla liczba argumentow!"
+fi
+
+# sprawdzenie dla podanego katalogu:
+# czy pliczek istnieje i jest katalogiem
+if [[ -d $1 ]]; then
+       	echo "Wybrany katalog: $1"
+else
+	echo "Zly katalog!"
+fi
+
+# sprawdzenie dla pliczku:
+# czy istnieje
+if [[ -a $2 ]]; then
+	echo "Pliczek $2 istnieje!"
+else
+	touch $2
+	echo "Pliczek $2 zostal utworzony!"
+fi
+
+# zapisujemy sobie aktualna sciezke
+currentdir=`pwd`
+# echo "currentdir=${currentdir}"
+
+# przenosimy sie do katalogu
+cd $1
+# dla pewnosci:
+echo "Jestemy w katalogu: $(pwd)"
+
+# dla kazdego pliczku w katalogu
+for name in *; do
+	# sprawdzamy czy pliczek jest pusty
+	if [[ ! -s $name ]]; then
+		# sprawdzamy czy pliczek jest zwyklym pliczkiem
+		if [[ -f $name ]]; then
+			# sprawdzamy czy pliczek nie jest dolaczeniem symbolicznym
+			if [[ -L $name ]]; then
+				echo "$name" >> $currentdir/$2	
+			fi
+		fi
+	fi
+done
+
+echo "All done!"
